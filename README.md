@@ -59,6 +59,14 @@ python -m scripts.tok_eval
 export WANDB_RUN=run1
 torchrun --standalone --nproc_per_node=4 -m scripts.base_train -- --device_batch_size 64 --depth=30
 
+# eval
+torchrun --standalone --nproc_per_node=4 -m scripts.base_loss
+torchrun --standalone --nproc_per_node=4 -m scripts.base_eval
 
+# mid train
+torchrun --standalone --nproc_per_node=4 -m scripts.mid_train
+
+# chat eval
+torchrun --standalone --nproc_per_node=4 -m scripts.chat_eval -- -i mid
 ```
 
