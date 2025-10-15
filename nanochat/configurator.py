@@ -26,7 +26,10 @@ def print0(s="",**kwargs):
 for arg in sys.argv[1:]:
     if '=' not in arg:
         # assume it's the name of a config file
-        assert not arg.startswith('--')
+        assert not arg.startswith('--'), (
+            f"Got arg: '{arg}' either pass '--arg=val' or 'config_file' "
+            f"but this script does not understand '--arg val' with space."
+        )
         config_file = arg
         print0(f"Overriding config with {config_file}:")
         with open(config_file) as f:

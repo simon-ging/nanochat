@@ -2,6 +2,10 @@
 
 [Original README](README.md)
 
+## changes
+
+- conda instead of uv
+
 ## documents
 
 - [The tutorial](https://github.com/karpathy/nanochat/discussions/1)
@@ -19,21 +23,29 @@ export WANDB_RUN=dummy  # adjust to log to wandb
 
 
 ```bash
+source env.sh
 conda update conda -n base -y
 rustup update
 conda create -n nc python=3.13 -y
 conda activate nc
 pip install torch torchvision
 pip install -e .
-pip install "maturin<2"
+pip install "maturin<2" wandb "black[jupyter]"
 maturin develop --release --manifest-path rustbpe/Cargo.toml
 ```
 
 ## commands
 
 ```bash
-# download
-python -m nanochat.dataset -n 240
+# download training data (-n 240 for less data)
+python -m nanochat.dataset
+
+# download eval data
+cd $NANOCHAT_BASE_DIR
+curl -L -o eval_bundle.zip https://karpathy-public.s3.us-west-2.amazonaws.com/eval_bundle.zip
+unzip -q eval_bundle.zip
+rm eval_bundle.zip
+cd -
 
 # reset the markdown report output
 python -m nanochat.report reset
@@ -41,7 +53,12 @@ python -m nanochat.report reset
 # train tokenizer
 python -m scripts.tok_train --max_chars=2000000000
 python -m scripts.tok_eval
-```
 
-## continue at pretraining
+# pretrain
+# author recommended bs 32 for h100
+export WANDB_RUN=run1
+torchrun --standalone --nproc_per_node=4 -m scripts.base_train -- --device_batch_size 64 --depth=30
+
+
+```
 
