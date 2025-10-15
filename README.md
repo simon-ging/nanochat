@@ -63,10 +63,16 @@ torchrun --standalone --nproc_per_node=4 -m scripts.base_train -- --device_batch
 torchrun --standalone --nproc_per_node=4 -m scripts.base_loss
 torchrun --standalone --nproc_per_node=4 -m scripts.base_eval
 
-# mid train
+# mid train and eval
 torchrun --standalone --nproc_per_node=4 -m scripts.mid_train
-
-# chat eval
 torchrun --standalone --nproc_per_node=4 -m scripts.chat_eval -- -i mid
+
+# sft train and eval
+torchrun --standalone --nproc_per_node=4 -m scripts.chat_sft
+torchrun --standalone --nproc_per_node=4 -m scripts.chat_eval -- -i sft
+
+# rl train and eval
+torchrun --standalone --nproc_per_node=4 -m scripts.chat_rl
+torchrun --standalone --nproc_per_node=4 -m scripts.chat_eval -- -i rl -a GSM8K
 ```
 
